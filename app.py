@@ -54,6 +54,18 @@ def health():
         'frames_processed': stats['total_frames']
     })
 
+@app.route('/debug/routes')
+def debug_routes():
+    """Debug: Mevcut routes'ları listele"""
+    routes = []
+    for rule in app.url_map.iter_rules():
+        routes.append({
+            'endpoint': rule.endpoint,
+            'methods': list(rule.methods),
+            'rule': rule.rule
+        })
+    return jsonify({'routes': routes})
+
 @app.route('/api/stats')
 def api_stats():
     """Detaylı istatistikler"""
