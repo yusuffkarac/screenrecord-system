@@ -1,0 +1,46 @@
+{
+  "blocked_applications": [
+    {
+      "name": "Steam",
+      "processes": ["steam", "steam.exe", "steamwebhelper"],
+      "warning_message": "🎮 Steam kullanımı yasak!"
+    },
+    {
+      "name": "Discord",
+      "processes": ["discord", "Discord.exe", "DiscordCanary"],
+      "warning_message": "💬 Discord kullanımı yasak!"
+    },
+    {
+      "name": "Firefox",
+      "processes": ["firefox", "firefox.exe", "Firefox", "/Applications/Firefox.app/Contents/MacOS/firefox", "Firefox.app"],
+      "warning_message": "🦊 Firefox kullanımı yasak!"
+    },
+    {
+      "name": "YouTube Music",
+      "processes": ["YouTube Music", "youtube-music"],
+      "warning_message": "🎵 YouTube Music yasak!"
+    },
+    {
+      "name": "Spotify",
+      "processes": ["spotify", "Spotify.exe", "Spotify"],
+      "warning_message": "🎶 Spotify kullanımı yasak!"
+    },
+    {
+      "name": "WhatsApp",
+      "processes": ["WhatsApp", "whatsapp"],
+      "warning_message": "📱 WhatsApp kullanımı yasak!"
+    },
+    {
+      "name": "Instagram",
+      "processes": ["Instagram", "instagram"],
+      "warning_message": "📸 Instagram kullanımı yasak!"
+    }
+  ],
+  "settings": {
+    "check_interval_seconds": 3,
+    "auto_kill": false,
+    "show_warnings": true,
+    "max_warnings": 3,
+    "app_blocker_enabled": false
+  }
+}
