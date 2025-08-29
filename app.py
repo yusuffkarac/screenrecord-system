@@ -76,6 +76,62 @@ def api_stats():
         }
     })
 
+@app.route('/api/screen-update', methods=['POST'])
+def api_screen_update():
+    """HTTP POST ile ekran güncellemesi (Go client uyumluluğu için)"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'JSON data required'}), 400
+            
+        client_id = data.get('clientId')
+        if not client_id:
+            return jsonify({'error': 'clientId required'}), 400
+        
+        # Client bilgilerini güncelle/oluştur
+        if client_id not in connected_clients:
+            connected_clients[client_id] = {
+                'id': client_id,
+                'socket_id': None,  # HTTP client, socket yok
+                'connected_at': datetime.now(),
+                'last_seen': datetime.now(),
+                'frames_sent': 0,
+                'user_agent': request.headers.get('User-Agent', 'Go HTTP Client'),
+                'connection_type': 'http'
+            }
+            print(f"📱 HTTP Client kaydedildi: {client_id}")
+        else:
+            connected_clients[client_id]['last_seen'] = datetime.now()
+            connected_clients[client_id]['frames_sent'] += 1
+        
+        # Ekran verisini sakla
+        latest_screens[client_id] = {
+            'clientId': client_id,
+            'image': data.get('image'),
+            'timestamp': data.get('timestamp', int(time.time())),
+            'type': 'screen_update'
+        }
+        
+        # İstatistikleri güncelle
+        stats['total_frames'] += 1
+        if data.get('image'):
+            # Base64 image size estimate
+            image_size_mb = len(data.get('image', '')) * 0.75 / (1024 * 1024)
+            stats['total_data_mb'] += image_size_mb
+        
+        # Tüm web viewer'lara SocketIO ile gönder
+        socketio.emit('screen_update', latest_screens[client_id])
+        
+        # Her 50 frame'de log
+        if stats['total_frames'] % 50 == 0:
+            print(f"📺 HTTP Frame #{stats['total_frames']} işlendi. Client: {client_id}")
+        
+        return jsonify({'status': 'success', 'message': 'Screen update received'})
+        
+    except Exception as e:
+        print(f"⚠️ HTTP screen update hatası: {e}")
+        return jsonify({'error': str(e)}), 500
+
 # WebSocket Events
 @socketio.on('connect')
 def handle_connect():
